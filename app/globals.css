@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Ẩn thanh cuộn trên trình duyệt WebKit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ẩn thanh cuộn trên Firefox */
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Ẩn trên IE và Edge */
+  overflow: auto;
+}

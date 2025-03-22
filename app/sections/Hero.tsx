@@ -16,14 +16,15 @@ const locations = [
   {
     id: 2,
     name: "HANG SỬNG SỐT",
-    image: "https://images.unsplash.com/photo-1573270695497-0b840a08d1e5",
+    image: "https://static.vinwonders.com/production/hang-sung-sot-banner.jpg",
     title: "Hang Sửng Sốt",
     description: "Hang động kỳ vĩ với những nhũ đá độc đáo",
   },
   {
     id: 3,
     name: "ĐẢO TITOP",
-    image: "https://images.unsplash.com/photo-1578653882694-56c1779e87b5",
+    image:
+      "https://mia.vn/media/uploads/blog-du-lich/dao-ti-top-ngam-nhin-hon-dao-binh-yen-giua-long-vinh-ha-long-1641626797.jpeg",
     title: "Đảo Titop",
     description: "Bãi biển tuyệt đẹp với tầm nhìn panorama",
   },
@@ -55,10 +56,6 @@ export default function Hero() {
       <AnimatePresence mode="wait">
         <motion.div
           key={currentLocation.image}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
           className="absolute inset-0 z-0"
         >
           <Image
@@ -69,7 +66,13 @@ export default function Hero() {
             priority
             quality={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent"
+          />
         </motion.div>
       </AnimatePresence>
 
@@ -180,54 +183,83 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.2 }}
             className="relative"
           >
-            <motion.h1
-              key={currentLocation.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-[120px] font-bold leading-[1.1] tracking-tighter"
-            >
-              {currentLocation.title.toUpperCase()}
-            </motion.h1>
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={currentLocation.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeOut",
+                }}
+                className="text-[120px] font-bold leading-[1.1] tracking-tighter"
+              >
+                {currentLocation.title.toUpperCase()}
+              </motion.h1>
+            </AnimatePresence>
             <div className="absolute -bottom-6 right-0 flex flex-col items-end">
               <span className="text-xl font-light">KHÁM PHÁ</span>
             </div>
           </motion.div>
 
           {/* Journey Path */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="mt-32"
-          >
+          <motion.div className="mt-32">
             <div className="relative">
-              <div className="border-b border-dashed border-white/30 absolute w-full top-1/2" />
+              <motion.div
+                className="border-b border-dashed border-white/30 absolute w-full top-1/2"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              />
               <div className="flex justify-between relative max-w-[480px]">
                 {locations.map((location) => (
-                  <div
+                  <motion.div
                     key={location.id}
                     onClick={() => handleLocationChange(location)}
                     className={`text-center group cursor-pointer transition-all duration-300 ${
                       currentLocation.id === location.id ? "scale-110" : ""
                     }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <div
-                      className={`w-3 h-3 rounded-full mx-auto mb-2 transition-all duration-300 group-hover:scale-150 ${
+                    <motion.div
+                      className={`w-3 h-3 rounded-full mx-auto mb-2 ${
                         currentLocation.id === location.id
                           ? "bg-[#00C951] w-4 h-4"
-                          : "bg-white/50 group-hover:bg-[#00C951]"
+                          : "bg-white/50"
                       }`}
+                      animate={{
+                        scale: currentLocation.id === location.id ? 1.2 : 1,
+                        backgroundColor:
+                          currentLocation.id === location.id
+                            ? "rgb(0, 201, 81)"
+                            : "rgba(255, 255, 255, 0.5)",
+                      }}
+                      transition={{
+                        duration: 0.2,
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20,
+                      }}
                     />
-                    <p
-                      className={`text-sm font-medium transition-colors duration-300 ${
+                    <motion.p
+                      className={`text-sm font-medium ${
                         currentLocation.id === location.id
                           ? "text-[#00C951]"
                           : "text-white/70"
                       }`}
+                      animate={{
+                        color:
+                          currentLocation.id === location.id
+                            ? "rgb(0, 201, 81)"
+                            : "rgba(255, 255, 255, 0.7)",
+                        scale: currentLocation.id === location.id ? 1.1 : 1,
+                      }}
+                      transition={{ duration: 0.2 }}
                     >
                       {location.name.split(" ").map((word, i) => (
                         <span key={i}>
@@ -235,23 +267,29 @@ export default function Hero() {
                           <br />
                         </span>
                       ))}
-                    </p>
-                  </div>
+                    </motion.p>
+                  </motion.div>
                 ))}
               </div>
             </div>
           </motion.div>
 
           {/* Location Description */}
-          <motion.p
-            key={currentLocation.description}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mt-10 text-base text-white/80 max-w-[420px]"
-          >
-            Di sản thiên nhiên thế giới với hàng nghìn hòn đảo đá vôi
-          </motion.p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentLocation.description}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{
+                duration: 0.3,
+                ease: "easeOut",
+              }}
+              className="mt-10 text-base text-white/80 max-w-[420px]"
+            >
+              {currentLocation.description}
+            </motion.p>
+          </AnimatePresence>
         </div>
       </div>
 

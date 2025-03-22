@@ -1,13 +1,15 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useState } from "react";
+import TourDetailModal from "../components/TourDetailModal";
 
 const destinations = [
   {
     id: 1,
     name: "Vịnh Hạ Long",
     location: "Quảng Ninh",
-    image: "https://images.unsplash.com/photo-1573270695497-0b840a08d1e5",
+    image: "https://images.unsplash.com/photo-1528127269322-539801943592",
     description: "Di sản thiên nhiên thế giới với hàng nghìn hòn đảo đá vôi",
     price: "2,890,000₫",
     duration: "2 ngày",
@@ -18,7 +20,8 @@ const destinations = [
     id: 2,
     name: "Phố Cổ Hội An",
     location: "Quảng Nam",
-    image: "https://images.unsplash.com/photo-1540870373724-b7834e8af5e6",
+    image:
+      "https://images.unsplash.com/photo-1716396435819-2a3706cc5f85?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     description: "Phố cổ lãng mạn với đèn lồng và kiến trúc độc đáo",
     price: "1,990,000₫",
     duration: "3 ngày",
@@ -29,7 +32,8 @@ const destinations = [
     id: 3,
     name: "Vịnh Lan Hạ",
     location: "Hải Phòng",
-    image: "https://images.unsplash.com/photo-1578653882694-56c1779e87b5",
+    image:
+      "https://images.vietnamtourism.gov.vn/vn/images/2021/vinh_lan_ha.jpg",
     description: "Thiên đường biển đảo hoang sơ với làn nước trong xanh",
     price: "3,490,000₫",
     duration: "2 ngày",
@@ -40,7 +44,8 @@ const destinations = [
     id: 4,
     name: "Hang Sơn Đoòng",
     location: "Quảng Bình",
-    image: "https://images.unsplash.com/photo-1589634749000-1e72ec00a13f",
+    image:
+      "https://cdnmedia.baotintuc.vn/Upload/lQuX6s340fSBU8AUyrDPxg/files/2019/12/vna_potal_chum_anh_ve_dep_cua_son_doong_hang_dong_tu_nhien_lon_nhat_the_gioi__3710474(1).jpg",
     description: "Hang động tự nhiên lớn nhất thế giới",
     price: "69,900,000₫",
     duration: "4 ngày",
@@ -50,6 +55,10 @@ const destinations = [
 ];
 
 export default function Destinations() {
+  const [selectedTour, setSelectedTour] = useState<
+    (typeof destinations)[0] | null
+  >(null);
+
   return (
     <section id="destinations" className="py-20 bg-gray-900">
       <div className="container mx-auto px-4">
@@ -80,7 +89,8 @@ export default function Destinations() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group bg-gray-900 rounded-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(0,201,81,0.15)] transition-all duration-300 transform hover:-translate-y-2"
+              onClick={() => setSelectedTour(destination)}
+              className="group bg-gray-900 rounded-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(0,201,81,0.15)] transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
             >
               <div className="relative h-64 overflow-hidden">
                 <Image
@@ -162,10 +172,13 @@ export default function Destinations() {
                     </svg>
                     {destination.duration}
                   </span>
-                  <button className="text-[#00C951] text-sm font-medium hover:text-white transition-colors flex items-center">
+                  <motion.button
+                    whileHover={{ x: 5 }}
+                    className="text-[#00C951] text-sm font-medium hover:text-white transition-colors flex items-center"
+                  >
                     Chi tiết
                     <svg
-                      className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
+                      className="w-4 h-4 ml-1"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -177,7 +190,7 @@ export default function Destinations() {
                         d="M9 5l7 7-7 7"
                       />
                     </svg>
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </motion.div>
@@ -209,6 +222,15 @@ export default function Destinations() {
           </button>
         </motion.div>
       </div>
+
+      {/* Tour Detail Modal */}
+      {selectedTour && (
+        <TourDetailModal
+          isOpen={!!selectedTour}
+          onClose={() => setSelectedTour(null)}
+          tour={selectedTour}
+        />
+      )}
     </section>
   );
 }

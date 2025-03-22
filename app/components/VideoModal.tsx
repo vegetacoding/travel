@@ -28,7 +28,7 @@ export default function VideoModal({
           exit={{ scale: 0.5, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden"
+          className="relative w-full max-w-7xl aspect-video bg-black rounded-lg overflow-hidden"
         >
           <button
             onClick={onClose}
