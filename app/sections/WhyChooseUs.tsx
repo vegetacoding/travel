@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 const reasons = [
   {
@@ -85,66 +86,96 @@ const reasons = [
 ];
 
 const containerVariants = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const titleVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
     },
   },
 };
 
 const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
-      duration: 0.6,
+      duration: 0.8,
       ease: "easeOut",
     },
   },
 };
 
 export default function WhyChooseUs() {
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { margin: "-100px" });
+
   return (
-    <section id="why-choose-us" className="py-20 bg-gray-50">
+    <section
+      ref={sectionRef}
+      id="why-choose-us"
+      className="py-20 bg-gray-50 overflow-hidden"
+    >
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <motion.h2
+            variants={titleVariants}
+            className="text-4xl font-bold text-gray-900 mb-4"
+          >
             Lý Do Chọn Chúng Tôi
-          </h2>
-          <div className="w-20 h-1.5 bg-[#00C951] mx-auto rounded-full mb-6" />
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.div
+            variants={titleVariants}
+            className="w-20 h-1.5 bg-[#00C951] mx-auto rounded-full mb-6"
+          />
+          <motion.p
+            variants={titleVariants}
+            className="text-lg text-gray-600 max-w-2xl mx-auto"
+          >
             Với kinh nghiệm nhiều năm trong lĩnh vực du lịch, chúng tôi tự hào
             mang đến cho khách hàng những trải nghiệm tuyệt vời nhất
-          </p>
+          </motion.p>
         </motion.div>
 
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
           {reasons.map((reason, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              className="bg-white rounded-2xl p-8 shadow-lg shadow-gray-200/50 hover:shadow-xl transition-shadow group"
+              className="bg-white rounded-2xl p-8 shadow-lg shadow-gray-200/50 hover:shadow-xl transition-all duration-500 group hover:-translate-y-2"
             >
-              <div className="w-16 h-16 bg-[#00C951]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#00C951]/20 transition-colors">
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="w-16 h-16 bg-[#00C951]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#00C951]/20 transition-colors"
+              >
                 {reason.icon}
-              </div>
+              </motion.div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
                 {reason.title}
               </h3>

@@ -1,7 +1,7 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import TourDetailModal from "../components/TourDetailModal";
 
 const destinations = [
@@ -54,67 +54,129 @@ const destinations = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const titleVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  },
+};
+
 export default function Destinations() {
   const [selectedTour, setSelectedTour] = useState<
     (typeof destinations)[0] | null
   >(null);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { margin: "-100px" });
 
   return (
-    <section id="destinations" className="py-20 bg-gray-900">
+    <section
+      ref={sectionRef}
+      id="destinations"
+      className="py-20 bg-gray-900 overflow-hidden"
+    >
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
           className="text-center mb-16"
         >
-          <span className="text-[#00C951] text-sm font-medium uppercase tracking-wider">
+          <motion.span
+            variants={titleVariants}
+            className="text-[#00C951] text-sm font-medium uppercase tracking-wider"
+          >
             Điểm Đến Nổi Bật
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 text-white">
+          </motion.span>
+          <motion.h2
+            variants={titleVariants}
+            className="text-4xl md:text-5xl font-bold mt-4 mb-6 text-white"
+          >
             Khám Phá Việt Nam
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          </motion.h2>
+          <motion.p
+            variants={titleVariants}
+            className="text-gray-400 max-w-2xl mx-auto text-lg"
+          >
             Những điểm đến độc đáo và ấn tượng nhất Việt Nam, từ di sản thiên
             nhiên đến văn hóa nghìn năm
-          </p>
+          </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {destinations.map((destination, index) => (
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+        >
+          {destinations.map((destination) => (
             <motion.div
               key={destination.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={cardVariants}
               onClick={() => setSelectedTour(destination)}
-              className="group bg-gray-900 rounded-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(0,201,81,0.15)] transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+              className="group bg-gray-900 rounded-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(0,201,81,0.15)] transition-all duration-500 transform hover:-translate-y-2 cursor-pointer"
             >
-              <div className="relative h-64 overflow-hidden">
+              <motion.div
+                className="relative h-64 overflow-hidden"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.5 }}
+              >
                 <Image
                   src={destination.image}
                   alt={destination.name}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                {/* Tag */}
                 <div className="absolute top-4 left-4">
-                  <span className="bg-[#00C951]/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                  <motion.span
+                    whileHover={{ scale: 1.1 }}
+                    className="bg-[#00C951]/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm"
+                  >
                     {destination.tag}
-                  </span>
+                  </motion.span>
                 </div>
 
-                {/* Price Tag */}
-                <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <span className="font-semibold text-white">
-                    {destination.price}
-                  </span>
+                <div className="absolute top-4 right-4">
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full"
+                  >
+                    <span className="font-semibold text-white">
+                      {destination.price}
+                    </span>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
 
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
@@ -195,16 +257,20 @@ export default function Destinations() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
           className="text-center mt-16"
         >
-          <button className="bg-[#00C951] text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-[#00B347] transition-all transform hover:scale-105 flex items-center mx-auto">
+          <motion.button
+            variants={titleVariants}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-[#00C951] text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-[#00B347] transition-all transform hover:scale-105 flex items-center mx-auto"
+          >
             Xem Tất Cả Điểm Đến
             <svg
               className="w-5 h-5 ml-2"
@@ -219,11 +285,10 @@ export default function Destinations() {
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
-          </button>
+          </motion.button>
         </motion.div>
       </div>
 
-      {/* Tour Detail Modal */}
       {selectedTour && (
         <TourDetailModal
           isOpen={!!selectedTour}
